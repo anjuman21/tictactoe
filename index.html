@@ -659,9 +659,11 @@ async function createRoom() {
     host: { nickname: nick, online: true },
     guest: null,
     symbols: { p1: sym1, p2: sym2 },
-    board: Array(9).fill(null),
+    board: boardToFB(Array(9).fill(null)),
     currentPlayer: 1,
     gameOver: false,
+    winner: null,
+    draw: null,
     scores: {p1:0, draw:0, p2:0},
     created: serverTimestamp(),
   });
@@ -681,8 +683,8 @@ async function createRoom() {
       oppNickname = data.guest.nickname;
       document.getElementById('lobbyStatus').className = 'status-pill connected';
       document.getElementById('lobbyStatus').innerHTML = '<span class="pulse-dot"></span> ' + oppNickname + ' joined!';
-      setTimeout(() => launchOnlineGame(data), 900);
-      if (unsubRoom) { unsubRoom(); unsubRoom = null; }
+      if (unsubRoom) { unsubRoom(); unsubRoom = null; } // clear lobby listener
+      setTimeout(() => launchOnlineGame(data), 700);
     }
   });
 }
@@ -742,14 +744,15 @@ function launchOnlineGame(data) {
   gameMode = 'online';
   scores   = data.scores || {p1:0, draw:0, p2:0};
 
-  // Header
-  const myLabel  = myNickname || (myPlayerNum === 1 ? 'You (P1)' : 'You (P2)');
-  const oppLabel = oppNickname || (myPlayerNum === 1 ? 'P2' : 'P1');
+  const myLabel  = myNickname;
+  const oppLabel = oppNickname;
 
   document.getElementById('p1sym').textContent = p1Symbol.icon;
   document.getElementById('p2sym').textContent = p2Symbol.icon;
-  document.getElementById('p1label').textContent = myPlayerNum === 1 ? myLabel : oppLabel;
-  document.getElementById('p2label').textContent = myPlayerNum === 2 ? myLabel : oppLabel;
+
+  // P1 tag = player 1, P2 tag = player 2 — label with who is who
+  document.getElementById('p1label').textContent = myPlayerNum === 1 ? myLabel+' (You)' : oppLabel;
+  document.getElementById('p2label').textContent = myPlayerNum === 2 ? myLabel+' (You)' : oppLabel;
   document.getElementById('modeBadge').textContent = 'ONLINE';
   document.getElementById('modeBadge').className   = 'mode-badge online';
 
@@ -757,35 +760,40 @@ function launchOnlineGame(data) {
   p2tag.classList.add('online-tag');
   p2tag.classList.remove('ai-tag');
 
-  document.getElementById('p2ScoreBox').className = 'score-box online';
+  document.getElementById('p2ScoreBox').className    = 'score-box online';
   document.getElementById('p2ScoreLabel').textContent = myPlayerNum === 2 ? myLabel : oppLabel;
   document.getElementById('score1Label').textContent  = myPlayerNum === 1 ? myLabel : oppLabel;
 
-  // New round button — only host can trigger new round in online
+  // Only host shows New Round button
   document.getElementById('newRoundBtn').style.display = myRole === 'host' ? '' : 'none';
 
   document.getElementById('chatWrap').style.display = 'block';
   updateScores();
-  subscribeRoom();
+  buildBoard();
+  subscribeRoom(); // single subscription point
   subscribeChat();
   showScreen('gameScreen');
+}
 
-  // Render current board
-  buildBoard();
-  if (data.board) {
-    data.board.forEach((v, i) => {
-      if (v) { board[i] = v; renderCell(i, v); }
-    });
+// ── Firebase board helpers ─────────────────────────────────────────
+// Firebase drops null values from arrays — convert to/from safe format
+function boardToFB(b)  { return b.map(v => v === null ? 0 : v); } // 0 = empty
+function boardFromFB(b) {
+  if (!b) return Array(9).fill(null);
+  // handle both array and object (firebase can return either)
+  const arr = Array(9).fill(null);
+  for (let i = 0; i < 9; i++) {
+    const v = b[i];
+    arr[i] = (v === 0 || v === undefined || v === null) ? null : v;
   }
-  currentPlayer = data.currentPlayer || 1;
-  gameOver      = data.gameOver || false;
-  updateUI();
+  return arr;
 }
 
 // ── Subscribe to room changes ──────────────────────────────────────
 function subscribeRoom() {
-  if (unsubRoom) { unsubRoom(); }
+  if (unsubRoom) { unsubRoom(); unsubRoom = null; }
   const {onValue, db, ref} = window._fb;
+
   unsubRoom = onValue(ref(db, 'rooms/' + roomCode), snap => {
     const data = snap.val();
     if (!data) {
@@ -794,14 +802,18 @@ function subscribeRoom() {
     }
     document.getElementById('connBanner').classList.remove('show');
 
+    // Sync board — convert from Firebase-safe format
+    const newBoard = boardFromFB(data.board);
     const prevBoard = [...board];
-    board         = data.board || Array(9).fill(null);
+    board         = newBoard;
     currentPlayer = data.currentPlayer || 1;
-    gameOver      = data.gameOver || false;
 
-    // Render any newly placed cells
+    // Render newly placed cells from opponent
     board.forEach((v, i) => {
-      if (v && !prevBoard[i]) renderCell(i, v);
+      if (v && !prevBoard[i]) {
+        const cell = document.querySelector('.cell[data-idx="'+i+'"]');
+        if (cell && !cell.classList.contains('taken')) renderCell(i, v);
+      }
     });
 
     if (data.scores) {
@@ -809,14 +821,17 @@ function subscribeRoom() {
       updateScores();
     }
 
-    // Win/draw display
-    if (data.winner) {
-      showWinner(data.winner, data.winLine);
-    } else if (data.draw) {
+    // Handle game end — only trigger if not already shown
+    if (data.winner && !gameOver) {
+      const winLine = data.winLine ? Object.values(data.winLine) : [];
+      showWinner(data.winner, winLine);
+    } else if (data.draw && !gameOver) {
       showDraw();
+    } else if (!data.winner && !data.draw) {
+      // Game is active
+      gameOver = false;
+      updateUI();
     }
-
-    updateUI();
   });
 }
 
@@ -1009,18 +1024,21 @@ async function pushBoardToFirebase() {
   if (!fbReady() || !roomRef) return;
   const {update} = window._fb;
 
-  // Check for win/draw before pushing
+  // Check win/draw
   const win  = WINS.find(line => line.every(i => board[i] === myPlayerNum));
   const draw = !win && board.every(Boolean);
-  const next = win || draw ? currentPlayer : (currentPlayer === 1 ? 2 : 1);
+  const next = (win || draw) ? currentPlayer : (currentPlayer === 1 ? 2 : 1);
+
+  // Convert winLine array to object so Firebase preserves it
+  const winLineObj = win ? win.reduce((o,v,i) => ({...o,[i]:v}), {}) : null;
 
   const payload = {
-    board,
+    board: boardToFB(board),   // ← safe format, no nulls
     currentPlayer: next,
     gameOver: !!(win || draw),
-    winner: win ? myPlayerNum : null,
-    draw:   draw ? true : null,
-    winLine: win || null,
+    winner:  win  ? myPlayerNum : null,
+    draw:    draw ? true        : null,
+    winLine: winLineObj,
   };
 
   if (win) {
@@ -1222,9 +1240,15 @@ function resetRound() {
   if (gameMode === 'online') {
     if (myRole !== 'host') return;
     const {update} = window._fb;
+    gameOver = false;
+    buildBoard();
     update(roomRef, {
-      board: Array(9).fill(null), currentPlayer: 1,
-      gameOver: false, winner: null, draw: null, winLine: null,
+      board: boardToFB(Array(9).fill(null)),
+      currentPlayer: 1,
+      gameOver: false,
+      winner: null,
+      draw: null,
+      winLine: null,
     });
     return;
   }
