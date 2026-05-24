@@ -7,7 +7,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+ 
   :root {
     --bg: #0a0a0f; --panel: #12121a; --border: #2a2a3e;
     --accent1: #ff4d6d; --accent2: #4d9fff; --accent3: #ffd166;
@@ -16,14 +16,14 @@
     --glow1: rgba(255,77,109,0.4); --glow2: rgba(77,159,255,0.4);
     --glow4: rgba(168,85,247,0.4); --glow5: rgba(34,197,94,0.4);
   }
-
+ 
   body {
     background: var(--bg); color: var(--text);
     font-family: 'Space Mono', monospace;
     min-height: 100vh; display: flex;
     align-items: center; justify-content: center; overflow: hidden;
   }
-
+ 
   body::before {
     content: ''; position: fixed; inset: 0;
     background-image:
@@ -33,16 +33,16 @@
     animation: gridPan 20s linear infinite; pointer-events: none;
   }
   @keyframes gridPan { from{background-position:0 0} to{background-position:40px 40px} }
-
+ 
   .container { position: relative; width: 460px; max-width: 96vw; }
-
+ 
   .screen { display: none; animation: fadeIn 0.35s ease; }
   .screen.active { display: block; }
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-
+ 
   /* TITLE */
   .title {
     font-family: 'Bebas Neue', sans-serif;
@@ -57,12 +57,12 @@
     font-size: 0.65rem; letter-spacing: 0.3em;
     text-transform: uppercase; margin-bottom: 28px;
   }
-
+ 
   .section-label {
     text-align: center; font-size: 0.65rem; letter-spacing: 0.28em;
     color: var(--muted); text-transform: uppercase; margin-bottom: 14px;
   }
-
+ 
   /* MODE GRID — now 3 cols */
   .mode-grid {
     display: grid; grid-template-columns: repeat(3, 1fr);
@@ -86,7 +86,7 @@
   .mode-icon  { font-size: 2.4rem; line-height: 1; }
   .mode-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.15rem; letter-spacing: 0.15em; }
   .mode-desc  { font-size: 0.55rem; color: var(--muted); letter-spacing: 0.08em; text-align: center; line-height: 1.6; }
-
+ 
   /* DIFFICULTY */
   .diff-wrap { margin-bottom: 22px; transition: all 0.3s; }
   .diff-wrap.hidden { opacity: 0; pointer-events: none; height: 0; overflow: hidden; margin: 0; }
@@ -101,7 +101,7 @@
   .diff-btn .d-icon { font-size: 1.2rem; }
   .diff-btn:hover { border-color: var(--accent3); color: var(--accent3); }
   .diff-btn.selected { border-color: var(--accent3); background: rgba(255,209,102,0.1); color: var(--accent3); box-shadow: 0 0 14px rgba(255,209,102,0.25); }
-
+ 
   /* SYMBOL PICKER */
   .pick-label {
     text-align: center; font-size: 0.7rem; letter-spacing: 0.25em;
@@ -119,7 +119,7 @@
   .sym-icon { font-size: 1.8rem; line-height: 1; }
   .sym-name { font-size: 0.56rem; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
   .sym-btn.selected .sym-name { color: var(--accent1); }
-
+ 
   /* SHARED BUTTONS */
   .action-btn {
     width: 100%; padding: 14px;
@@ -136,7 +136,7 @@
     cursor: pointer; padding: 6px; transition: color 0.18s;
   }
   .back-link:hover { color: var(--accent2); }
-
+ 
   /* ── ONLINE LOBBY ── */
   .online-card {
     background: var(--panel); border: 1px solid var(--border);
@@ -169,7 +169,7 @@
   .inline-btn.blue   { background: var(--accent2); color: #0a0a0f; }
   .inline-btn.blue:hover   { box-shadow: 0 4px 16px var(--glow2); }
   .inline-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
+ 
   .room-code-display {
     background: #0d0d1a; border: 1px dashed var(--accent5);
     border-radius: 8px; padding: 12px 16px;
@@ -188,7 +188,7 @@
     transition: all 0.18s;
   }
   .copy-btn:hover { background: var(--accent5); color: #0a0a0f; }
-
+ 
   .status-pill {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 5px 12px; border-radius: 20px; font-size: 0.6rem;
@@ -199,14 +199,14 @@
   .status-pill.error { background: rgba(255,77,109,0.12); color: var(--accent1); border: 1px solid rgba(255,77,109,0.3); }
   .pulse-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulseDot 1.1s ease-in-out infinite; }
   @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.7)} }
-
+ 
   .divider {
     display: flex; align-items: center; gap: 10px;
     color: var(--muted); font-size: 0.58rem; letter-spacing: 0.15em;
     text-transform: uppercase; margin: 16px 0;
   }
   .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
+ 
   /* ── GAME SCREEN ── */
   .game-header {
     display: flex; justify-content: space-between;
@@ -236,7 +236,7 @@
   .mode-badge.ai     { background: rgba(168,85,247,0.2); color: var(--accent4); }
   .mode-badge.pvp    { background: rgba(77,159,255,0.2);  color: var(--accent2); }
   .mode-badge.online { background: rgba(34,197,94,0.2);   color: var(--accent5); }
-
+ 
   .scores { display: flex; gap: 8px; margin-bottom: 14px; }
   .score-box {
     flex: 1; background: var(--panel); border: 1px solid var(--border);
@@ -249,7 +249,7 @@
   .score-box.p2   .s-val { color: var(--accent2); }
   .score-box.ai   .s-val { color: var(--accent4); }
   .score-box.online .s-val { color: var(--accent5); }
-
+ 
   /* BOARD */
   .board { display: grid; grid-template-columns: repeat(3,1fr); gap: 9px; margin-bottom: 14px; }
   .cell {
@@ -269,7 +269,7 @@
   @keyframes pulse { from{box-shadow:0 0 8px rgba(255,209,102,0.3)} to{box-shadow:0 0 22px rgba(255,209,102,0.75)} }
   .cell-pop { animation: cellPop 0.25s cubic-bezier(0.34,1.56,0.64,1); }
   @keyframes cellPop { from{transform:scale(0.35);opacity:0} to{transform:scale(1);opacity:1} }
-
+ 
   /* STATUS */
   .status-bar {
     background: var(--panel); border: 1px solid var(--border);
@@ -280,12 +280,12 @@
   }
   .status-bar.win  { border-color: var(--accent3); color: var(--accent3); box-shadow: 0 0 16px rgba(255,209,102,0.2); }
   .status-bar.draw { border-color: var(--muted);   color: var(--text); }
-
+ 
   .thinking-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent4); animation: thinkBlink 0.6s ease-in-out infinite alternate; margin: 0 2px; }
   .thinking-dot:nth-child(2) { animation-delay: 0.15s; }
   .thinking-dot:nth-child(3) { animation-delay: 0.30s; }
   @keyframes thinkBlink { from{opacity:0.2;transform:scale(0.8)} to{opacity:1;transform:scale(1.2)} }
-
+ 
   /* ACTIONS */
   .actions { display: flex; gap: 9px; margin-bottom: 14px; }
   .btn {
@@ -297,7 +297,7 @@
   .btn:hover { border-color: var(--accent2); color: var(--accent2); }
   .btn.primary { background: linear-gradient(135deg, var(--accent1), #c0375a); border-color: transparent; color: white; }
   .btn.primary:hover { box-shadow: 0 4px 16px var(--glow1); color: white; }
-
+ 
   /* ── CHAT BOX ── */
   .chat-wrap {
     background: var(--panel); border: 1px solid var(--border);
@@ -355,7 +355,7 @@
   }
   .chat-send:hover { background: #6bb8ff; }
   .chat-send:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
-
+ 
   /* CONNECTION LOST BANNER */
   .conn-banner {
     display: none; background: rgba(255,77,109,0.15); border: 1px solid var(--accent1);
@@ -368,7 +368,7 @@
 </head>
 <body>
 <div class="container">
-
+ 
   <!-- SCREEN 1: MODE -->
   <div class="screen active" id="modeScreen">
     <div class="title">TIC TAC TOE</div>
@@ -391,7 +391,7 @@
         <span class="mode-desc">Invite via<br>link or code</span>
       </button>
     </div>
-
+ 
     <div class="diff-wrap hidden" id="diffWrap">
       <div class="section-label" style="margin-bottom:12px;">AI Difficulty</div>
       <div class="diff-grid">
@@ -400,15 +400,15 @@
         <button class="diff-btn" id="diffHard"   onclick="selectDiff('hard')"><span class="d-icon">💀</span>Hard</button>
       </div>
     </div>
-
+ 
     <button class="action-btn" id="modeNextBtn" disabled onclick="modeNext()">Next →</button>
   </div>
-
+ 
   <!-- SCREEN 2: ONLINE LOBBY -->
   <div class="screen" id="onlineScreen">
     <div class="title">TIC TAC TOE</div>
     <div class="subtitle">Online Multiplayer</div>
-
+ 
     <!-- CREATE ROOM -->
     <div class="online-card">
       <h3><span>🏠</span> Create a Room</h3>
@@ -432,9 +432,9 @@
         </div>
       </div>
     </div>
-
+ 
     <div class="divider">or join existing</div>
-
+ 
     <!-- JOIN ROOM -->
     <div class="online-card">
       <h3><span>🔗</span> Join a Room</h3>
@@ -447,10 +447,10 @@
       </div>
       <div id="joinStatus" style="display:none;margin-top:10px"></div>
     </div>
-
+ 
     <span class="back-link" onclick="showScreen('modeScreen')">← Back to Mode</span>
   </div>
-
+ 
   <!-- SCREEN 3: SYMBOL PICKER -->
   <div class="screen" id="pickScreen">
     <div class="title">TIC TAC TOE</div>
@@ -460,7 +460,7 @@
     <button class="action-btn" id="startBtn" disabled onclick="startGame()">Start Game</button>
     <span class="back-link" onclick="goBackFromPick()">← Back</span>
   </div>
-
+ 
   <!-- SCREEN 4: GAME -->
   <div class="screen" id="gameScreen">
     <div class="conn-banner" id="connBanner">⚠ Opponent disconnected. Waiting to reconnect…</div>
@@ -475,21 +475,21 @@
         <span class="tag-label" id="p2label">Player 2</span>
       </div>
     </div>
-
+ 
     <div class="scores">
       <div class="score-box p1"><div class="s-label" id="score1Label">You</div><div class="s-val" id="score1">0</div></div>
       <div class="score-box draw"><div class="s-label">Draw</div><div class="s-val" id="scoreDraw">0</div></div>
       <div class="score-box p2" id="p2ScoreBox"><div class="s-label" id="p2ScoreLabel">P2</div><div class="s-val" id="score2">0</div></div>
     </div>
-
+ 
     <div class="board" id="board"></div>
     <div class="status-bar" id="status">Player 1's turn</div>
-
+ 
     <div class="actions">
       <button class="btn" id="newRoundBtn" onclick="resetRound()">New Round</button>
       <button class="btn primary" onclick="goHome()">Change Mode</button>
     </div>
-
+ 
     <!-- Chat (only shown in online mode) -->
     <div class="chat-wrap" id="chatWrap" style="display:none;margin-top:14px">
       <div class="chat-header">
@@ -505,15 +505,15 @@
       </div>
     </div>
   </div>
-
+ 
 </div>
-
+ 
 <!-- Firebase -->
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getDatabase, ref, set, get, update, push, onValue, onDisconnect, serverTimestamp, remove }
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
-
+ 
 // ── FIREBASE CONFIG (free Realtime DB — public demo project) ──────
 // Uses a publicly shareable anonymous Firebase project for demo
 const firebaseConfig = {
@@ -526,7 +526,7 @@ const firebaseConfig = {
   appId: "1:307519032953:web:37393818aa0d686341cea8",
   measurementId: "G-VVVCRE7KZB"
 };
-
+ 
 let app, db;
 try {
   app = initializeApp(firebaseConfig);
@@ -535,13 +535,13 @@ try {
 } catch(e) {
   window._dbReady = false;
 }
-
+ 
 // Expose DB helpers globally
 window._fb = { ref, set, get, update, push, onValue, onDisconnect, serverTimestamp, remove, db };
 window._firebaseLoaded = true;
 dispatchEvent(new Event('firebaseReady'));
 </script>
-
+ 
 <script>
 // ══════════════════════════════════════════════════════════════════
 //  STATE
@@ -552,7 +552,7 @@ const SYMBOLS = [
   {icon:'🌙',name:'Moon'},{icon:'🚀',name:'Rocket'},{icon:'👑',name:'Crown'},
 ];
 const WINS = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-
+ 
 let gameMode   = null;   // 'ai' | 'pvp' | 'online'
 let difficulty = null;
 let p1Symbol   = null, p2Symbol = null;
@@ -560,7 +560,7 @@ let board      = Array(9).fill(null);
 let currentPlayer = 1;
 let gameOver   = false, aiThinking = false;
 let scores     = {p1:0, draw:0, p2:0};
-
+ 
 // Online state
 let myRole        = null;   // 'host' | 'guest'
 let myNickname    = '';
@@ -572,7 +572,7 @@ let unsubRoom     = null;
 let unsubChat     = null;
 let myPlayerNum   = null;   // 1 or 2
 let onlineSymbols = {};     // {1: symObj, 2: symObj}
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  SCREEN HELPERS
 // ══════════════════════════════════════════════════════════════════
@@ -580,7 +580,7 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  MODE SELECTION
 // ══════════════════════════════════════════════════════════════════
@@ -589,7 +589,7 @@ function selectMode(mode) {
   document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
   const map = {ai:'ai-btn', pvp:'pvp-btn', online:'online-btn'};
   document.querySelector('.'+map[mode]).classList.add('selected');
-
+ 
   const diffWrap = document.getElementById('diffWrap');
   if (mode === 'ai') {
     diffWrap.classList.remove('hidden');
@@ -600,7 +600,7 @@ function selectMode(mode) {
   }
   document.getElementById('modeNextBtn').disabled = false;
 }
-
+ 
 function selectDiff(d) {
   difficulty = d;
   ['easy','medium','hard'].forEach(x => {
@@ -608,7 +608,7 @@ function selectDiff(d) {
     el.classList.toggle('selected', x === d);
   });
 }
-
+ 
 function modeNext() {
   if (gameMode === 'online') {
     // Check if arrived via invite link
@@ -622,38 +622,38 @@ function modeNext() {
     showScreen('pickScreen');
   }
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  ONLINE — FIREBASE
 // ══════════════════════════════════════════════════════════════════
 function genCode() {
   return Math.random().toString(36).substring(2,6).toUpperCase();
 }
-
+ 
 function fbReady() {
   return window._dbReady && window._firebaseLoaded;
 }
-
+ 
 async function createRoom() {
   if (!fbReady()) { alert('Real-time connection unavailable. Please set up Firebase (see instructions below).'); return; }
   const nick = document.getElementById('nicknameCreate').value.trim() || 'Player 1';
   myNickname = nick;
   myRole = 'host';
   myPlayerNum = 1;
-
+ 
   const code   = genCode();
   roomCode     = code;
   const {ref, set, onDisconnect, serverTimestamp, db, onValue, push} = window._fb;
-
+ 
   roomRef = ref(db, 'rooms/' + code);
   chatRef = ref(db, 'rooms/' + code + '/chat');
-
+ 
   // Pick random symbol for host
   const sym1 = SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)];
   const others = SYMBOLS.filter(s => s.icon !== sym1.icon);
   const sym2   = others[Math.floor(Math.random() * others.length)];
   onlineSymbols = {1: sym1, 2: sym2};
-
+ 
   await set(roomRef, {
     code, status: 'waiting',
     host: { nickname: nick, online: true },
@@ -667,14 +667,14 @@ async function createRoom() {
     scores: {p1:0, draw:0, p2:0},
     created: serverTimestamp(),
   });
-
+ 
   // Auto-remove room on disconnect
   onDisconnect(roomRef).remove();
-
+ 
   document.getElementById('displayRoomCode').textContent = code;
   document.getElementById('roomCreatedInfo').style.display = 'block';
   document.getElementById('createRoomBtn').disabled = true;
-
+ 
   // Listen for guest joining
   unsubRoom = onValue(roomRef, snap => {
     const data = snap.val();
@@ -688,46 +688,46 @@ async function createRoom() {
     }
   });
 }
-
+ 
 async function joinRoom() {
   if (!fbReady()) { alert('Real-time connection unavailable. Please set up Firebase.'); return; }
   const nick = document.getElementById('nicknameJoin').value.trim() || 'Player 2';
   const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
   if (code.length < 4) { showJoinStatus('error', '⚠ Enter a valid room code'); return; }
-
+ 
   myNickname  = nick;
   myRole      = 'guest';
   myPlayerNum = 2;
   roomCode    = code;
-
+ 
   const {ref, get, update, set, onValue, onDisconnect, serverTimestamp, push, db} = window._fb;
   roomRef = ref(db, 'rooms/' + code);
   chatRef = ref(db, 'rooms/' + code + '/chat');
-
+ 
   const snap = await get(roomRef);
   if (!snap.exists()) { showJoinStatus('error', '⚠ Room not found'); return; }
   const data = snap.val();
   if (data.status !== 'waiting') { showJoinStatus('error', '⚠ Room is already full'); return; }
-
+ 
   oppNickname   = data.host.nickname;
   onlineSymbols = {1: data.symbols.p1, 2: data.symbols.p2};
-
+ 
   showJoinStatus('waiting', '✓ Joining…');
   await update(roomRef, { guest: { nickname: nick, online: true }, status: 'ready' });
   onDisconnect(ref(db, 'rooms/' + code + '/guest')).remove();
-
+ 
   // Listen for game updates
   subscribeRoom();
   launchOnlineGame(data);
 }
-
+ 
 function showJoinStatus(type, msg) {
   const el = document.getElementById('joinStatus');
   el.style.display = 'block';
   el.className = 'status-pill ' + type;
   el.innerHTML = '<span class="pulse-dot"></span> ' + msg;
 }
-
+ 
 function copyLink() {
   const url = location.origin + location.pathname + '?room=' + roomCode;
   navigator.clipboard.writeText(url).then(() => {
@@ -736,37 +736,37 @@ function copyLink() {
     setTimeout(() => btn.textContent = 'Copy Link', 2000);
   });
 }
-
+ 
 // ── Launch online game ─────────────────────────────────────────────
 function launchOnlineGame(data) {
   p1Symbol = onlineSymbols[1];
   p2Symbol = onlineSymbols[2];
   gameMode = 'online';
   scores   = data.scores || {p1:0, draw:0, p2:0};
-
+ 
   const myLabel  = myNickname;
   const oppLabel = oppNickname;
-
+ 
   document.getElementById('p1sym').textContent = p1Symbol.icon;
   document.getElementById('p2sym').textContent = p2Symbol.icon;
-
+ 
   // P1 tag = player 1, P2 tag = player 2 — label with who is who
   document.getElementById('p1label').textContent = myPlayerNum === 1 ? myLabel+' (You)' : oppLabel;
   document.getElementById('p2label').textContent = myPlayerNum === 2 ? myLabel+' (You)' : oppLabel;
   document.getElementById('modeBadge').textContent = 'ONLINE';
   document.getElementById('modeBadge').className   = 'mode-badge online';
-
+ 
   const p2tag = document.getElementById('p2tag');
   p2tag.classList.add('online-tag');
   p2tag.classList.remove('ai-tag');
-
+ 
   document.getElementById('p2ScoreBox').className    = 'score-box online';
   document.getElementById('p2ScoreLabel').textContent = myPlayerNum === 2 ? myLabel : oppLabel;
   document.getElementById('score1Label').textContent  = myPlayerNum === 1 ? myLabel : oppLabel;
-
+ 
   // Only host shows New Round button
   document.getElementById('newRoundBtn').style.display = myRole === 'host' ? '' : 'none';
-
+ 
   document.getElementById('chatWrap').style.display = 'block';
   updateScores();
   buildBoard();
@@ -774,7 +774,7 @@ function launchOnlineGame(data) {
   subscribeChat();
   showScreen('gameScreen');
 }
-
+ 
 // ── Firebase board helpers ─────────────────────────────────────────
 // Firebase drops null values from arrays — convert to/from safe format
 function boardToFB(b)  { return b.map(v => v === null ? 0 : v); } // 0 = empty
@@ -788,12 +788,12 @@ function boardFromFB(b) {
   }
   return arr;
 }
-
+ 
 // ── Subscribe to room changes ──────────────────────────────────────
 function subscribeRoom() {
   if (unsubRoom) { unsubRoom(); unsubRoom = null; }
   const {onValue, db, ref} = window._fb;
-
+ 
   unsubRoom = onValue(ref(db, 'rooms/' + roomCode), snap => {
     const data = snap.val();
     if (!data) {
@@ -801,13 +801,25 @@ function subscribeRoom() {
       return;
     }
     document.getElementById('connBanner').classList.remove('show');
-
-    // Sync board — convert from Firebase-safe format
+ 
     const newBoard = boardFromFB(data.board);
+ 
+    // ── Detect new round: board was reset (all empty) but we had moves ──
+    const boardWasReset = newBoard.every(v => v === null) && board.some(v => v !== null);
+    if (boardWasReset) {
+      // Full UI reset for both players
+      gameOver = false;
+      board = Array(9).fill(null);
+      buildBoard(); // rebuild DOM completely
+      currentPlayer = data.currentPlayer || 1;
+      updateUI();
+      return;
+    }
+ 
     const prevBoard = [...board];
     board         = newBoard;
     currentPlayer = data.currentPlayer || 1;
-
+ 
     // Render newly placed cells from opponent
     board.forEach((v, i) => {
       if (v && !prevBoard[i]) {
@@ -815,12 +827,12 @@ function subscribeRoom() {
         if (cell && !cell.classList.contains('taken')) renderCell(i, v);
       }
     });
-
+ 
     if (data.scores) {
       scores = data.scores;
       updateScores();
     }
-
+ 
     // Handle game end — only trigger if not already shown
     if (data.winner && !gameOver) {
       const winLine = data.winLine ? Object.values(data.winLine) : [];
@@ -828,13 +840,12 @@ function subscribeRoom() {
     } else if (data.draw && !gameOver) {
       showDraw();
     } else if (!data.winner && !data.draw) {
-      // Game is active
       gameOver = false;
       updateUI();
     }
   });
 }
-
+ 
 function renderCell(idx, playerNum) {
   const cell = document.querySelector('.cell[data-idx="'+idx+'"]');
   if (!cell) return;
@@ -843,7 +854,7 @@ function renderCell(idx, playerNum) {
   cell.textContent = sym.icon;
   cell.classList.add('taken', cls, 'cell-pop');
 }
-
+ 
 // ── Subscribe to chat ──────────────────────────────────────────────
 function subscribeChat() {
   if (unsubChat) { unsubChat(); }
@@ -861,7 +872,7 @@ function subscribeChat() {
     }
   });
 }
-
+ 
 function sendChat() {
   const input = document.getElementById('chatInput');
   const text  = input.value.trim();
@@ -873,11 +884,11 @@ function sendChat() {
   appendChat(myNickname, text, true);
   input.value = '';
 }
-
+ 
 function chatKeydown(e) {
   if (e.key === 'Enter') sendChat();
 }
-
+ 
 function appendChat(sender, text, isMine) {
   const wrap = document.getElementById('chatMessages');
   const div  = document.createElement('div');
@@ -897,7 +908,7 @@ function appendChat(sender, text, isMine) {
   wrap.appendChild(div);
   wrap.scrollTop = wrap.scrollHeight;
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  SYMBOL PICKER (local modes)
 // ══════════════════════════════════════════════════════════════════
@@ -909,7 +920,7 @@ SYMBOLS.forEach((s, i) => {
   btn.onclick = () => selectSymbol(i, btn);
   grid.appendChild(btn);
 });
-
+ 
 function selectSymbol(idx, btn) {
   document.querySelectorAll('.sym-btn').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
@@ -918,29 +929,29 @@ function selectSymbol(idx, btn) {
   p2Symbol = others[Math.floor(Math.random() * others.length)];
   document.getElementById('startBtn').disabled = false;
 }
-
+ 
 function goBackFromPick() {
   showScreen(gameMode === 'online' ? 'onlineScreen' : 'modeScreen');
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  START LOCAL GAME
 // ══════════════════════════════════════════════════════════════════
 function startGame() {
   if (!p1Symbol) return;
   const isAI = gameMode === 'ai';
-
+ 
   document.getElementById('p1sym').textContent = p1Symbol.icon;
   document.getElementById('p2sym').textContent = p2Symbol.icon;
   document.getElementById('p1label').textContent = 'Player 1';
   document.getElementById('p2label').textContent = isAI ? '🤖 AI' : 'Player 2';
   document.getElementById('score1Label').textContent = 'P1';
-
+ 
   const p2ScoreBox   = document.getElementById('p2ScoreBox');
   const p2ScoreLabel = document.getElementById('p2ScoreLabel');
   const p2tag        = document.getElementById('p2tag');
   const modeBadge    = document.getElementById('modeBadge');
-
+ 
   if (isAI) {
     p2ScoreLabel.textContent = 'AI';
     p2ScoreBox.className     = 'score-box ai';
@@ -955,7 +966,7 @@ function startGame() {
     modeBadge.textContent    = 'PVP';
     modeBadge.className      = 'mode-badge pvp';
   }
-
+ 
   document.getElementById('chatWrap').style.display = 'none';
   document.getElementById('newRoundBtn').style.display = '';
   scores = {p1:0, draw:0, p2:0};
@@ -963,7 +974,7 @@ function startGame() {
   resetRound();
   showScreen('gameScreen');
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  BOARD
 // ══════════════════════════════════════════════════════════════════
@@ -979,7 +990,7 @@ function buildBoard() {
     el.appendChild(cell);
   }
 }
-
+ 
 function placeSymbol(idx, player) {
   board[idx] = player;
   const cell = document.querySelector('.cell[data-idx="'+idx+'"]');
@@ -993,13 +1004,13 @@ function placeSymbol(idx, player) {
   cell.textContent = sym.icon;
   cell.classList.add('taken', cls, 'cell-pop');
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  CLICK HANDLER
 // ══════════════════════════════════════════════════════════════════
 function handleClick(idx) {
   if (gameOver || board[idx] || aiThinking) return;
-
+ 
   if (gameMode === 'online') {
     // Only allow click if it's my turn
     if (currentPlayer !== myPlayerNum) return;
@@ -1008,30 +1019,30 @@ function handleClick(idx) {
     pushBoardToFirebase();
     return;
   }
-
+ 
   if (gameMode === 'ai' && currentPlayer === 2) return;
-
+ 
   placeSymbol(idx, currentPlayer);
   if (checkEndState()) return;
-
+ 
   currentPlayer = currentPlayer === 1 ? 2 : 1;
   updateUI();
   if (gameMode === 'ai' && currentPlayer === 2) scheduleAIMove();
 }
-
+ 
 // ── Push board to Firebase ─────────────────────────────────────────
 async function pushBoardToFirebase() {
   if (!fbReady() || !roomRef) return;
   const {update} = window._fb;
-
+ 
   // Check win/draw
   const win  = WINS.find(line => line.every(i => board[i] === myPlayerNum));
   const draw = !win && board.every(Boolean);
   const next = (win || draw) ? currentPlayer : (currentPlayer === 1 ? 2 : 1);
-
+ 
   // Convert winLine array to object so Firebase preserves it
   const winLineObj = win ? win.reduce((o,v,i) => ({...o,[i]:v}), {}) : null;
-
+ 
   const payload = {
     board: boardToFB(board),   // ← safe format, no nulls
     currentPlayer: next,
@@ -1040,7 +1051,7 @@ async function pushBoardToFirebase() {
     draw:    draw ? true        : null,
     winLine: winLineObj,
   };
-
+ 
   if (win) {
     scores[myPlayerNum === 1 ? 'p1' : 'p2']++;
     payload.scores = scores;
@@ -1048,10 +1059,10 @@ async function pushBoardToFirebase() {
     scores.draw++;
     payload.scores = scores;
   }
-
+ 
   await update(roomRef, payload);
 }
-
+ 
 // ── Show win/draw remotely ─────────────────────────────────────────
 function showWinner(winnerNum, winLine) {
   if (gameOver) return;
@@ -1069,7 +1080,7 @@ function showWinner(winnerNum, winLine) {
   if (gameMode !== 'online') return;
   appendSystemChat(isMe ? '🎉 You won the round!' : ('💔 '+name+' won the round!'));
 }
-
+ 
 function showDraw() {
   if (gameOver) return;
   gameOver = true;
@@ -1079,7 +1090,7 @@ function showDraw() {
   status.className   = 'status-bar draw';
   if (gameMode === 'online') appendSystemChat("🤝 It's a draw!");
 }
-
+ 
 function appendSystemChat(msg) {
   const wrap = document.getElementById('chatMessages');
   const div  = document.createElement('div');
@@ -1088,7 +1099,7 @@ function appendSystemChat(msg) {
   wrap.appendChild(div);
   wrap.scrollTop = wrap.scrollHeight;
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  AI LOGIC
 // ══════════════════════════════════════════════════════════════════
@@ -1104,14 +1115,14 @@ function scheduleAIMove() {
     updateUI();
   }, 380 + Math.random() * 280);
 }
-
+ 
 function getAIMove() {
   const empty = board.map((v,i) => v===null?i:-1).filter(i=>i>=0);
   if (difficulty === 'easy') return empty[Math.floor(Math.random()*empty.length)];
   if (difficulty === 'medium' && Math.random() < 0.4) return empty[Math.floor(Math.random()*empty.length)];
   return bestMove();
 }
-
+ 
 function bestMove() {
   const win   = findWinningMove(2); if (win !== -1) return win;
   const block = findWinningMove(1); if (block !== -1) return block;
@@ -1125,7 +1136,7 @@ function bestMove() {
   });
   return bestIdx;
 }
-
+ 
 function findWinningMove(player) {
   for (const line of WINS) {
     const vals = line.map(i => board[i]);
@@ -1134,7 +1145,7 @@ function findWinningMove(player) {
   }
   return -1;
 }
-
+ 
 function minimax(b, depth, isMax) {
   const w = getBoardWinner(b);
   if (w===2) return 10-depth;
@@ -1150,12 +1161,12 @@ function minimax(b, depth, isMax) {
     return best;
   }
 }
-
+ 
 function getBoardWinner(b) {
   for (const [a,c,d] of WINS) { if(b[a]&&b[a]===b[c]&&b[a]===b[d]) return b[a]; }
   return null;
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  END STATE (local modes only)
 // ══════════════════════════════════════════════════════════════════
@@ -1185,18 +1196,18 @@ function checkEndState() {
   }
   return false;
 }
-
+ 
 function lockBoard() {
   document.querySelectorAll('.cell:not(.taken)').forEach(c => c.classList.add('locked'));
 }
-
+ 
 function lockBoardDuringAI() {
   const status = document.getElementById('status');
   status.innerHTML = `🤖 AI is thinking <span class="thinking-dot"></span><span class="thinking-dot"></span><span class="thinking-dot"></span>`;
   status.className = 'status-bar';
   document.querySelectorAll('.cell:not(.taken)').forEach(c => c.style.pointerEvents='none');
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  UI HELPERS
 // ══════════════════════════════════════════════════════════════════
@@ -1226,13 +1237,13 @@ function updateUI() {
     document.getElementById('status').className   = 'status-bar';
   }
 }
-
+ 
 function updateScores() {
   document.getElementById('score1').textContent    = gameMode==='online' ? (myPlayerNum===1?scores.p1:scores.p2) : scores.p1;
   document.getElementById('scoreDraw').textContent = scores.draw;
   document.getElementById('score2').textContent    = gameMode==='online' ? (myPlayerNum===2?scores.p1:scores.p2) : scores.p2;
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  ROUND / HOME
 // ══════════════════════════════════════════════════════════════════
@@ -1240,8 +1251,13 @@ function resetRound() {
   if (gameMode === 'online') {
     if (myRole !== 'host') return;
     const {update} = window._fb;
+    // Reset local state first
     gameOver = false;
+    board = Array(9).fill(null);
     buildBoard();
+    currentPlayer = 1;
+    updateUI();
+    // Then push reset to Firebase so guest gets triggered
     update(roomRef, {
       board: boardToFB(Array(9).fill(null)),
       currentPlayer: 1,
@@ -1255,7 +1271,7 @@ function resetRound() {
   gameOver = false; aiThinking = false; currentPlayer = 1;
   buildBoard(); updateUI();
 }
-
+ 
 function goHome() {
   // Cleanup online
   if (gameMode === 'online' && roomRef && fbReady()) {
@@ -1264,13 +1280,13 @@ function goHome() {
   }
   if (unsubRoom) { unsubRoom(); unsubRoom = null; }
   if (unsubChat) { unsubChat(); unsubChat = null; }
-
+ 
   gameMode=null; difficulty=null; p1Symbol=null; p2Symbol=null;
   myRole=null; myPlayerNum=null; roomCode=null; roomRef=null; chatRef=null;
   oppNickname=''; myNickname='';
   scores={p1:0,draw:0,p2:0};
   gameOver=false; aiThinking=false;
-
+ 
   document.querySelectorAll('.mode-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById('diffWrap').classList.add('hidden');
   document.getElementById('modeNextBtn').disabled = true;
@@ -1285,13 +1301,13 @@ function goHome() {
   document.getElementById('nicknameJoin').value = '';
   document.getElementById('chatMessages').innerHTML = '<div class="chat-msg system"><div class="chat-bubble">Game started! Say hi 👋</div></div>';
   document.getElementById('connBanner').classList.remove('show');
-
+ 
   // Clear invite param from URL
   history.replaceState({}, '', location.pathname);
-
+ 
   showScreen('modeScreen');
 }
-
+ 
 // ══════════════════════════════════════════════════════════════════
 //  AUTO-JOIN VIA URL
 // ══════════════════════════════════════════════════════════════════
@@ -1305,7 +1321,7 @@ window.addEventListener('load', () => {
     document.getElementById('joinCodeInput').value = code.toUpperCase();
   }
 });
-
+ 
 // Expose for inline onclick
 window.selectMode=selectMode; window.selectDiff=selectDiff; window.modeNext=modeNext;
 window.selectSymbol=selectSymbol; window.startGame=startGame; window.goBackFromPick=goBackFromPick;
@@ -1316,3 +1332,4 @@ window.showScreen=showScreen;
 </script>
 </body>
 </html>
+ 
