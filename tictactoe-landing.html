@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TicTacToe — Play Online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #08090d;
+  --surface:   #0e1018;
+  --border:    rgba(255,255,255,0.08);
+  --border-hi: rgba(255,255,255,0.18);
+  --text:      #e8eaf0;
+  --muted:     #555b72;
+  --dim:       #2e3244;
+  --accent:    #4f8eff;
+  --accent-lo: rgba(79,142,255,0.12);
+  --green:     #3ddba8;
+  --green-lo:  rgba(61,219,168,0.10);
+  --red:       #ff4d6d;
+  --mono:      'IBM Plex Mono', monospace;
+  --sans:      'IBM Plex Sans', sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16px;line-height:1.6;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:72px 72px;pointer-events:none}
+.mono{font-family:var(--mono)}
+.eyebrow{font-family:var(--mono);font-size:.65rem;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.eyebrow.blue{color:var(--accent)}.eyebrow.green{color:var(--green)}
+h1{font-family:var(--mono);font-size:clamp(3.2rem,9vw,7.5rem);font-weight:600;line-height:.92;letter-spacing:-.03em;color:var(--text)}
+h1 em{font-style:normal;color:var(--accent)}
+h2{font-family:var(--mono);font-size:clamp(1.5rem,3.5vw,2.4rem);font-weight:500;letter-spacing:-.02em;color:var(--text)}
+h3{font-family:var(--mono);font-size:1rem;font-weight:500;letter-spacing:-.01em}
+p{font-family:var(--sans);color:var(--muted);font-weight:300}
+.container{max-width:1160px;margin:0 auto;padding:0 32px;position:relative;z-index:1}
+section{padding:100px 0}
+section+section{border-top:1px solid var(--border)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;border-bottom:1px solid var(--border);background:rgba(8,9,13,.85);backdrop-filter:blur(12px)}
+.nav-inner{max-width:1160px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px}
+.nav-logo{font-family:var(--mono);font-size:.85rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px}
+.nav-logo::before{content:'⊠';font-size:1.1rem;color:var(--accent)}
+.nav-links{display:flex;align-items:center;gap:32px;list-style:none}
+.nav-links a{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .18s}
+.nav-links a:hover{color:var(--text)}
+.nav-cta{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;padding:9px 20px;border:1px solid var(--accent);border-radius:2px;color:var(--accent);text-decoration:none;transition:all .18s}
+.nav-cta:hover{background:var(--accent);color:var(--bg)}
+
+/* HERO */
+#hero{padding:160px 0 100px;position:relative;overflow:hidden}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--green);border:1px solid rgba(61,219,168,.25);padding:6px 14px;border-radius:2px;background:var(--green-lo);margin-bottom:36px}
+.hero-tag::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--green);animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero-title{margin-bottom:28px}
+.hero-sub{font-size:1.1rem;font-weight:300;color:var(--muted);max-width:540px;margin-bottom:48px;line-height:1.7}
+.hero-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.btn-primary{font-family:var(--mono);font-size:.78rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;padding:14px 32px;background:var(--accent);color:var(--bg);border:none;border-radius:2px;cursor:pointer;text-decoration:none;transition:all .18s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{background:#6fa5ff;transform:translateY(-1px)}
+.btn-secondary{font-family:var(--mono);font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;padding:13px 28px;background:transparent;color:var(--text);border:1px solid var(--border-hi);border-radius:2px;cursor:pointer;text-decoration:none;transition:all .18s}
+.btn-secondary:hover{border-color:var(--text)}
+
+/* HERO VISUAL */
+.hero-visual{position:absolute;right:-20px;top:50%;transform:translateY(-50%);width:420px;opacity:.5;pointer-events:none}
+@media(max-width:900px){.hero-visual{display:none}}
+.term-board{background:var(--surface);border:1px solid var(--border-hi);border-radius:4px;padding:28px;font-family:var(--mono)}
+.term-bar{display:flex;gap:6px;margin-bottom:24px}
+.term-dot{width:10px;height:10px;border-radius:50%}
+.term-dot:nth-child(1){background:var(--red)}
+.term-dot:nth-child(2){background:#f5a623}
+.term-dot:nth-child(3){background:var(--green)}
+.term-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+.term-cell{aspect-ratio:1;border:1px solid var(--dim);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;background:var(--bg);transition:all .3s}
+.term-cell.x{color:var(--red);border-color:rgba(255,77,109,.3)}
+.term-cell.o{color:var(--green);border-color:rgba(61,219,168,.3)}
+.term-cell.w{background:rgba(79,142,255,.08);border-color:var(--accent)}
+.term-status{font-size:.65rem;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}
+.term-cursor{display:inline-block;width:7px;height:12px;background:var(--accent);margin-left:4px;animation:blink .9s step-end infinite;vertical-align:middle}
+
+/* TICKER */
+.ticker-wrap{overflow:hidden;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:14px 0;background:var(--surface)}
+.ticker{display:flex;gap:64px;width:max-content;animation:ticker 22s linear infinite}
+.ticker-item{font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);white-space:nowrap;display:flex;align-items:center;gap:16px}
+.ticker-item::before{content:'◆';color:var(--accent);font-size:.5rem}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.stat-item{background:var(--bg);padding:36px 28px;position:relative}
+.stat-item::after{content:attr(data-n);position:absolute;top:20px;right:20px;font-family:var(--mono);font-size:.58rem;color:var(--dim);letter-spacing:.1em}
+.stat-val{font-family:var(--mono);font-size:clamp(2rem,4vw,3rem);font-weight:600;color:var(--text);line-height:1;margin-bottom:8px}
+.stat-val span{color:var(--accent)}
+.stat-label{font-size:.72rem}
+@media(max-width:700px){.stats-row{grid-template-columns:repeat(2,1fr)}}
+
+/* MODES */
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:48px;flex-wrap:wrap}
+.modes-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.mode-card{background:var(--surface);padding:40px 32px;transition:background .22s;position:relative;overflow:hidden}
+.mode-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background .22s}
+.mode-card:hover{background:#0f1120}
+.mode-card:hover::before{background:var(--accent)}
+.mode-card.featured::before{background:var(--green)}
+.mode-card.featured{background:rgba(61,219,168,.03)}
+.mode-num{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--dim);margin-bottom:28px;display:block}
+.mode-icon{font-size:2rem;margin-bottom:20px;display:block;line-height:1}
+.mode-card h3{margin-bottom:10px}
+.mode-card p{font-size:.85rem;line-height:1.7}
+.mode-tag{display:inline-block;margin-top:20px;font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:4px 10px;border-radius:2px}
+.mode-tag.new{background:var(--green-lo);color:var(--green);border:1px solid rgba(61,219,168,.2)}
+.mode-tag.hot{background:var(--accent-lo);color:var(--accent);border:1px solid rgba(79,142,255,.2)}
+@media(max-width:720px){.modes-grid{grid-template-columns:1fr}}
+
+/* HOW */
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--border)}
+.step{padding:40px 28px;border-right:1px solid var(--border);position:relative}
+.step:last-child{border-right:none}
+.step-n{font-family:var(--mono);font-size:.58rem;color:var(--accent);letter-spacing:.2em;margin-bottom:24px;display:block}
+.step h3{margin-bottom:10px}
+.step p{font-size:.82rem;line-height:1.65}
+@media(max-width:760px){.steps-grid{grid-template-columns:1fr 1fr}.step{border-right:none;border-bottom:1px solid var(--border)}.step:last-child{border-bottom:none}}
+
+/* FEATURES TABLE */
+.feat-table{width:100%;border-collapse:collapse;border:1px solid var(--border)}
+.feat-table th{font-family:var(--mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:400;padding:16px 20px;text-align:left;border-bottom:1px solid var(--border);background:var(--surface)}
+.feat-table td{font-family:var(--mono);font-size:.78rem;padding:18px 20px;border-bottom:1px solid var(--border);color:var(--text)}
+.feat-table tr:last-child td{border-bottom:none}
+.feat-table tr:hover td{background:rgba(255,255,255,.02)}
+.check{color:var(--green)}.dot{color:var(--dim)}
+.feat-label{display:inline-block;font-size:.58rem;letter-spacing:.12em;padding:2px 8px;border-radius:2px;margin-left:8px;background:var(--accent-lo);color:var(--accent);text-transform:uppercase}
+
+/* CTA */
+.cta-box{background:var(--surface);border:1px solid var(--border-hi);padding:72px 60px;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
+.cta-box::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.cta-inner{max-width:580px}
+.cta-deco{position:absolute;right:60px;top:50%;transform:translateY(-50%);display:grid;grid-template-columns:repeat(3,1fr);gap:6px;opacity:.2}
+.cta-deco-cell{width:36px;height:36px;border:1px solid var(--accent);border-radius:2px}
+.cta-deco-cell:nth-child(1),.cta-deco-cell:nth-child(5),.cta-deco-cell:nth-child(9){background:rgba(79,142,255,.2)}
+@media(max-width:700px){.cta-box{padding:48px 28px}.cta-deco{display:none}}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:40px 0}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.footer-copy{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;color:var(--muted)}
+.footer-links{display:flex;gap:28px;list-style:none}
+.footer-links a{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .18s}
+.footer-links a:hover{color:var(--text)}
+
+/* DIVIDER */
+.h-rule{display:flex;align-items:center;gap:16px;margin-bottom:48px}
+.h-rule .eyebrow{flex-shrink:0}
+.h-rule::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(22px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">TicTacToe</a>
+    <ul class="nav-links">
+      <li><a href="#modes">Modes</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a href="#features">Features</a></li>
+    </ul>
+    <a href="tictactoe.html" class="nav-cta">Play Now ↗</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-tag">Live · Online Multiplayer Ready</div>
+    <div class="hero-title">
+      <h1>Tic<br><em>Tac</em><br>Toe</h1>
+    </div>
+    <p class="hero-sub">Classic 3-in-a-row. Reimagined with real-time online play, AI opponents, and live in-game chat. Challenge a friend or test yourself against the machine.</p>
+    <div class="hero-actions">
+      <a href="tictactoe.html" class="btn-primary">Play Now →</a>
+      <a href="#modes" class="btn-secondary">Explore Modes</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="term-board">
+      <div class="term-bar">
+        <div class="term-dot"></div><div class="term-dot"></div><div class="term-dot"></div>
+      </div>
+      <div class="term-grid">
+        <div class="term-cell x w">✖</div>
+        <div class="term-cell"></div>
+        <div class="term-cell x w">✖</div>
+        <div class="term-cell o">⭕</div>
+        <div class="term-cell x w">✖</div>
+        <div class="term-cell o">⭕</div>
+        <div class="term-cell"></div>
+        <div class="term-cell o">⭕</div>
+        <div class="term-cell"></div>
+      </div>
+      <div class="term-status">✖ Player wins<span class="term-cursor"></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <div class="ticker-item">VS AI</div>
+    <div class="ticker-item">Online Multiplayer</div>
+    <div class="ticker-item">Live Chat</div>
+    <div class="ticker-item">Room Codes</div>
+    <div class="ticker-item">9 Symbols</div>
+    <div class="ticker-item">Minimax AI</div>
+    <div class="ticker-item">Easy · Medium · Hard</div>
+    <div class="ticker-item">2 Player Local</div>
+    <div class="ticker-item">VS AI</div>
+    <div class="ticker-item">Online Multiplayer</div>
+    <div class="ticker-item">Live Chat</div>
+    <div class="ticker-item">Room Codes</div>
+    <div class="ticker-item">9 Symbols</div>
+    <div class="ticker-item">Minimax AI</div>
+    <div class="ticker-item">Easy · Medium · Hard</div>
+    <div class="ticker-item">2 Player Local</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<section id="stats" style="padding:0;border-top:1px solid var(--border)">
+  <div class="stats-row">
+    <div class="stat-item" data-n="01"><div class="stat-val"><span>9</span></div><p class="stat-label">Playable symbols</p></div>
+    <div class="stat-item" data-n="02"><div class="stat-val"><span>3</span></div><p class="stat-label">Game modes</p></div>
+    <div class="stat-item" data-n="03"><div class="stat-val"><span>∞</span></div><p class="stat-label">Online rooms</p></div>
+    <div class="stat-item" data-n="04"><div class="stat-val"><span>0</span>ms</div><p class="stat-label">Avg. sync latency</p></div>
+  </div>
+</section>
+
+<!-- MODES -->
+<section id="modes">
+  <div class="container">
+    <div class="h-rule"><span class="eyebrow blue">Game Modes</span></div>
+    <div class="section-head reveal">
+      <h2>Three ways<br>to play</h2>
+      <p style="max-width:320px;font-size:.9rem">Pick your match type. Solo, local duo, or anywhere-in-the-world online. Same game, three completely different experiences.</p>
+    </div>
+    <div class="modes-grid reveal">
+      <div class="mode-card">
+        <span class="mode-num">01</span>
+        <span class="mode-icon">🤖</span>
+        <h3>VS AI</h3>
+        <p>Train your instincts against a Minimax-powered engine. Three difficulty levels — from casual warm-up to genuinely unbeatable.</p>
+        <span class="mode-tag hot">3 Difficulty Levels</span>
+      </div>
+      <div class="mode-card featured">
+        <span class="mode-num">02</span>
+        <span class="mode-icon">🌐</span>
+        <h3>Online</h3>
+        <p>Generate a room code. Share the link. Your friend joins from any device, anywhere. Real-time sync via Firebase with live chat built in.</p>
+        <span class="mode-tag new">Live Now</span>
+      </div>
+      <div class="mode-card">
+        <span class="mode-num">03</span>
+        <span class="mode-icon">👥</span>
+        <h3>2 Players</h3>
+        <p>Pass-and-play on the same screen. No account, no setup, no internet needed. Just two people and one device.</p>
+        <span class="mode-tag hot">Local</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="container">
+    <div class="h-rule"><span class="eyebrow blue">How It Works</span></div>
+    <h2 class="reveal" style="margin-bottom:48px">Online in<br>four steps</h2>
+    <div class="steps-grid reveal">
+      <div class="step">
+        <span class="step-n">STEP 01</span>
+        <h3>Pick a symbol</h3>
+        <p>Choose from 9 unique symbols. Your opponent gets assigned a different one automatically — no conflicts.</p>
+      </div>
+      <div class="step">
+        <span class="step-n">STEP 02</span>
+        <h3>Create a room</h3>
+        <p>Enter your nickname and hit Create. A 4-digit room code generates instantly with a shareable invite link.</p>
+      </div>
+      <div class="step">
+        <span class="step-n">STEP 03</span>
+        <h3>Invite & join</h3>
+        <p>Send the link. Your opponent opens it, enters their name, clicks Join. Both players connect in real time.</p>
+      </div>
+      <div class="step">
+        <span class="step-n">STEP 04</span>
+        <h3>Play & chat</h3>
+        <p>Moves sync instantly across devices. Use the built-in chat to taunt, congratulate, or call a rematch.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="h-rule"><span class="eyebrow blue">Features</span></div>
+    <h2 class="reveal" style="margin-bottom:48px">Everything<br>included</h2>
+    <table class="feat-table reveal">
+      <thead>
+        <tr>
+          <th>Feature</th><th>VS AI</th><th>2 Players</th><th>Online</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Custom symbols <span class="feat-label">9 options</span></td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Score tracking across rounds</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>Win / draw detection</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+        <tr><td>AI difficulty levels</td><td class="check">Easy · Medium · Hard</td><td class="dot">—</td><td class="dot">—</td></tr>
+        <tr><td>Minimax algorithm</td><td class="check">✓ Hard mode</td><td class="dot">—</td><td class="dot">—</td></tr>
+        <tr><td>Real-time board sync</td><td class="dot">—</td><td class="dot">—</td><td class="check">✓</td></tr>
+        <tr><td>Shareable room link</td><td class="dot">—</td><td class="dot">—</td><td class="check">✓</td></tr>
+        <tr><td>Live in-game chat</td><td class="dot">—</td><td class="dot">—</td><td class="check">✓</td></tr>
+        <tr><td>Disconnect detection</td><td class="dot">—</td><td class="dot">—</td><td class="check">✓</td></tr>
+        <tr><td>No account required</td><td class="check">✓</td><td class="check">✓</td><td class="check">✓</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="border-top:1px solid var(--border);padding:80px 0">
+  <div class="container">
+    <div class="cta-box reveal">
+      <div class="cta-inner">
+        <p class="eyebrow green" style="margin-bottom:20px">Ready to play?</p>
+        <h2 style="margin-bottom:16px">Your move.</h2>
+        <p style="margin-bottom:36px;font-size:.95rem">Open the game, pick your symbol, and start a match in under 30 seconds. No download. No signup. Just play.</p>
+        <a href="tictactoe.html" class="btn-primary">Open Game →</a>
+      </div>
+      <div class="cta-deco">
+        <div class="cta-deco-cell"></div><div class="cta-deco-cell"></div><div class="cta-deco-cell"></div>
+        <div class="cta-deco-cell"></div><div class="cta-deco-cell"></div><div class="cta-deco-cell"></div>
+        <div class="cta-deco-cell"></div><div class="cta-deco-cell"></div><div class="cta-deco-cell"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <p class="footer-copy">© 2026 TicTacToe · Built by Anjuman · Powered by Firebase</p>
+      <ul class="footer-links">
+        <li><a href="tictactoe.html">Play</a></li>
+        <li><a href="#modes">Modes</a></li>
+        <li><a href="#how">How it works</a></li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const io = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)} });
+}, {threshold:.1});
+document.querySelectorAll('.reveal').forEach(r => io.observe(r));
+
+// Stat counters
+const statObs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(!e.isIntersecting) return;
+    const el = e.target;
+    const match = el.innerHTML.match(/(\d+)/);
+    if(!match) return;
+    const target = parseInt(match[1]);
+    const suffix = el.innerHTML.replace(/<span>\d+<\/span>/,'');
+    let cur = 0;
+    const step = Math.max(1, Math.floor(target/30));
+    const iv = setInterval(() => {
+      cur = Math.min(cur+step, target);
+      el.innerHTML = `<span>${cur}</span>${suffix}`;
+      if(cur >= target) clearInterval(iv);
+    }, 40);
+    statObs.unobserve(el);
+  });
+},{threshold:.5});
+document.querySelectorAll('.stat-val').forEach(v => statObs.observe(v));
+
+// Terminal board pulse
+const cells = document.querySelectorAll('.term-cell');
+let ci = 0;
+setInterval(() => {
+  cells.forEach(c => c.style.opacity = '.35');
+  if(cells[ci]) cells[ci].style.opacity = '1';
+  ci = (ci+1) % cells.length;
+}, 650);
+</script>
+</body>
+</html>
