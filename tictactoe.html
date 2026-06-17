@@ -1118,22 +1118,48 @@ function scheduleAIMove() {
 
 function getAIMove() {
   const empty = board.map((v,i) => v===null?i:-1).filter(i=>i>=0);
-  if (difficulty === 'easy') return empty[Math.floor(Math.random()*empty.length)];
-  if (difficulty === 'medium' && Math.random() < 0.4) return empty[Math.floor(Math.random()*empty.length)];
+
+  if (difficulty === 'easy') {
+    // Easy: always random — player should win most of the time
+    return empty[Math.floor(Math.random()*empty.length)];
+  }
+
+  if (difficulty === 'medium') {
+    // Medium: only blocks an immediate loss, takes an immediate win,
+    // otherwise plays randomly — player can still win with good play
+    const win   = findWinningMove(2);  if (win   !== -1) return win;
+    const block = findWinningMove(1);  if (block !== -1) return block;
+    return empty[Math.floor(Math.random()*empty.length)];
+  }
+
+  // Hard: full minimax — truly unbeatable
   return bestMove();
 }
 
 function bestMove() {
-  const win   = findWinningMove(2); if (win !== -1) return win;
+  // 1. Take the win immediately
+  const win = findWinningMove(2);   if (win   !== -1) return win;
+  // 2. Block player from winning
   const block = findWinningMove(1); if (block !== -1) return block;
+  // 3. Take center if free
+  if (board[4] === null) return 4;
+  // 4. Take a corner if free
+  const corners = [0,2,6,8].filter(i => board[i] === null);
+  if (corners.length) return corners[Math.floor(Math.random()*corners.length)];
+  // 5. Full minimax for remaining cells
   let best = -Infinity, bestIdx = -1;
   board.forEach((v,i) => {
     if (v !== null) return;
     board[i] = 2;
-    const score = minimax(board, 0, false);
+    const score = minimax(board, 0, false, -Infinity, Infinity);
     board[i] = null;
     if (score > best) { best = score; bestIdx = i; }
   });
+  // Fallback: pick any empty cell (should never reach here)
+  if (bestIdx === -1) {
+    const empty = board.map((v,i)=>v===null?i:-1).filter(i=>i>=0);
+    return empty[Math.floor(Math.random()*empty.length)];
+  }
   return bestIdx;
 }
 
@@ -1146,18 +1172,34 @@ function findWinningMove(player) {
   return -1;
 }
 
-function minimax(b, depth, isMax) {
+// Alpha-beta pruning minimax — faster and truly optimal
+function minimax(b, depth, isMax, alpha, beta) {
   const w = getBoardWinner(b);
-  if (w===2) return 10-depth;
-  if (w===1) return -10+depth;
-  if (b.every(Boolean)) return 0;
+  if (w===2) return 10 - depth;
+  if (w===1) return depth - 10;
+  if (b.every(v => v !== null)) return 0;
+
   if (isMax) {
-    let best=-Infinity;
-    b.forEach((v,i)=>{ if(v!==null)return; b[i]=2; best=Math.max(best,minimax(b,depth+1,false)); b[i]=null; });
+    let best = -Infinity;
+    for (let i = 0; i < 9; i++) {
+      if (b[i] !== null) continue;
+      b[i] = 2;
+      best = Math.max(best, minimax(b, depth+1, false, alpha, beta));
+      b[i] = null;
+      alpha = Math.max(alpha, best);
+      if (beta <= alpha) break; // prune
+    }
     return best;
   } else {
-    let best=Infinity;
-    b.forEach((v,i)=>{ if(v!==null)return; b[i]=1; best=Math.min(best,minimax(b,depth+1,true)); b[i]=null; });
+    let best = Infinity;
+    for (let i = 0; i < 9; i++) {
+      if (b[i] !== null) continue;
+      b[i] = 1;
+      best = Math.min(best, minimax(b, depth+1, true, alpha, beta));
+      b[i] = null;
+      beta = Math.min(beta, best);
+      if (beta <= alpha) break; // prune
+    }
     return best;
   }
 }
